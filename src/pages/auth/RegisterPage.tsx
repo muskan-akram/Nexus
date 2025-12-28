@@ -5,6 +5,7 @@ import { useAuth } from '../../context/AuthContext';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
 import { UserRole } from '../../types';
+import zxcvbn from 'zxcvbn';
 
 export const RegisterPage: React.FC = () => {
   const [name, setName] = useState('');
@@ -14,6 +15,7 @@ export const RegisterPage: React.FC = () => {
   const [role, setRole] = useState<UserRole>('entrepreneur');
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [score, setScore] = useState(0); // Password strength score
   
   const { register } = useAuth();
   const navigate = useNavigate();
@@ -22,7 +24,6 @@ export const RegisterPage: React.FC = () => {
     e.preventDefault();
     setError(null);
     
-    // Validate passwords match
     if (password !== confirmPassword) {
       setError('Passwords do not match');
       return;
@@ -32,7 +33,6 @@ export const RegisterPage: React.FC = () => {
     
     try {
       await register(name, email, password, role);
-      // Redirect based on user role
       navigate(role === 'entrepreneur' ? '/dashboard/entrepreneur' : '/dashboard/investor');
     } catch (err) {
       setError((err as Error).message);
@@ -126,11 +126,48 @@ export const RegisterPage: React.FC = () => {
               label="Password"
               type="password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                const result = zxcvbn(e.target.value);
+                setScore(result.score);
+              }}
               required
               fullWidth
               startAdornment={<Lock size={18} />}
             />
+
+            {/* Password Strength Meter */}
+            {password && (
+              <div className="mt-1">
+                <div className="h-2 w-full rounded-full bg-gray-200">
+                  <div
+                    className={`h-2 rounded-full ${
+                      score === 0
+                        ? 'bg-red-500'
+                        : score === 1
+                        ? 'bg-orange-500'
+                        : score === 2
+                        ? 'bg-yellow-400'
+                        : score === 3
+                        ? 'bg-green-400'
+                        : 'bg-green-600'
+                    }`}
+                    style={{ width: `${(score + 1) * 20}%` }}
+                  ></div>
+                </div>
+                <p className="text-sm mt-1 text-gray-700">
+                  {score === 0
+                    ? 'Very Weak'
+                    : score === 1
+                    ? 'Weak'
+                    : score === 2
+                    ? 'Fair'
+                    : score === 3
+                    ? 'Good'
+                    : 'Strong'}
+                </p>
+              </div>
+            )}
             
             <Input
               label="Confirm password"

@@ -18,17 +18,27 @@ export const DashboardLayout: React.FC = () => {
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
-  
+
+  // Determine which sidebar items to show based on role
+  const roleBasedSidebarProps = {
+    role: user?.role || 'entrepreneur',
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <Navbar />
-      
+
       <div className="flex-1 flex overflow-hidden">
-        <Sidebar />
-        
+        <Sidebar role={user?.role || 'entrepreneur'} userId={user?.id || ''} />
+
         <main className="flex-1 overflow-y-auto p-6">
           <div className="max-w-7xl mx-auto">
-            <Outlet />
+            {user?.role === 'investor' && (
+              <Outlet context={{ role: 'investor' }} />
+            )}
+            {user?.role === 'entrepreneur' && (
+              <Outlet context={{ role: 'entrepreneur' }} />
+            )}
           </div>
         </main>
       </div>

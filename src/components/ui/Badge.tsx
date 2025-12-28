@@ -1,6 +1,14 @@
 import React from 'react';
 
-export type BadgeVariant = 'primary' | 'secondary' | 'accent' | 'success' | 'warning' | 'error' | 'gray';
+export type BadgeVariant =
+  | 'primary'
+  | 'secondary'
+  | 'accent'
+  | 'success'
+  | 'warning'
+  | 'error'
+  | 'gray'
+  | 'outline'; // Added outline
 export type BadgeSize = 'sm' | 'md' | 'lg';
 
 interface BadgeProps {
@@ -18,7 +26,7 @@ export const Badge: React.FC<BadgeProps> = ({
   rounded = false,
   className = '',
 }) => {
-  const variantClasses = {
+  const variantClasses: Record<BadgeVariant, string> = {
     primary: 'bg-primary-100 text-primary-800',
     secondary: 'bg-secondary-100 text-secondary-800',
     accent: 'bg-accent-100 text-accent-800',
@@ -26,16 +34,17 @@ export const Badge: React.FC<BadgeProps> = ({
     warning: 'bg-warning-50 text-warning-700',
     error: 'bg-error-50 text-error-700',
     gray: 'bg-gray-100 text-gray-800',
+    outline: 'border border-gray-300 text-gray-800 bg-transparent', // new outline style
   };
-  
-  const sizeClasses = {
+
+  const sizeClasses: Record<BadgeSize, string> = {
     sm: 'text-xs px-2 py-0.5',
     md: 'text-sm px-2.5 py-0.5',
     lg: 'text-base px-3 py-1',
   };
-  
+
   const roundedClass = rounded ? 'rounded-full' : 'rounded';
-  
+
   return (
     <span
       className={`inline-flex items-center font-medium ${roundedClass} ${variantClasses[variant]} ${sizeClasses[size]} ${className}`}

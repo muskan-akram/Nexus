@@ -30,11 +30,31 @@ import { DealsPage } from './pages/deals/DealsPage';
 // Chat Pages
 import { ChatPage } from './pages/chat/ChatPage';
 
+//import newly created pages
+import { Meetings } from './pages/meetings/Meetings';
+import { VideoCall } from './pages/video/VideoCall';
+import { Wallet } from './pages/wallet/Wallet';
+import { SignaturePad } from './pages/documents/SignaturePad';
+
 function App() {
   return (
     <AuthProvider>
       <Router>
         <Routes>
+          {/* New Feature Routes */}
+          <Route path="/meetings" element={<DashboardLayout />}>
+            <Route index element={<Meetings />} />
+          </Route>
+          <Route path="/video-call" element={<DashboardLayout />}>
+            <Route index element={<VideoCall />} />
+          </Route>
+          <Route path="/wallet" element={<DashboardLayout />}>
+            <Route index element={<Wallet />} />
+          </Route>
+          <Route path="/signature-pad" element={<DashboardLayout />}>
+            <Route index element={<SignaturePad />} />
+          </Route>
+          
           {/* Authentication Routes */}
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
